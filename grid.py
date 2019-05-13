@@ -11,37 +11,41 @@ class Grid:
     def __repr__(self):
         return repr(self.grid)
 
+    # We draw top-left to bottom-right, so in general, we only need to know
+    # the southeast character. But we need to know northeast characters for
+    # the top row and southwest characters for the left column. Those are
+    # implemented (badly) as methods on cells.
     def __str__(self):
         PIPE = '│'
-        PLUS = '+'
         DASH = '───'
 
-        dashplus = DASH + PLUS
+        ret = '┌'
 
-        ret = PLUS + (dashplus * self.cols) + "\n"
+        # do top border
+        for cell in self.grid[0]:
+            ret += DASH + cell.ne_char()
+        ret += '\n'
 
         for row in self.each_row():
-            top = PIPE
-            bottom = PLUS
+            mid = PIPE
+            bottom = row[0].sw_char()
 
             for cell in row:
-                body = '   '
                 east_b = ' ' if cell.is_linked_to(cell.east) else PIPE
-                top = top + body + east_b
+                mid += '   ' + east_b
 
                 south_b = '   ' if cell.is_linked_to(cell.south) else DASH
-                corner = PLUS
-                bottom = bottom + south_b + corner
+                bottom += south_b + cell.se_char()
 
-            ret = ret + top + '\n'
-            ret = ret + bottom + '\n'
+            ret += mid + '\n'
+            ret += bottom + '\n'
 
         return ret
 
 
 
     def prepare_grid(self):
-        return [[cell.Cell(r, c) for c in range(self.cols)] for r in range(self.rows)]
+        return [[cell.Cell(self, r, c) for c in range(self.cols)] for r in range(self.rows)]
 
     def get(self, row, col):
         if row < 0 or row > self.rows - 1:
@@ -72,7 +76,6 @@ class Grid:
         for row in self.each_row():
             for cell in row:
                 yield cell
-
 
 
 if __name__ == '__main__':
