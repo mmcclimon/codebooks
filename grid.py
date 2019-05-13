@@ -1,6 +1,29 @@
 import random
 import cell
 
+NORTH = 1
+EAST  = 2
+SOUTH = 4
+WEST  = 8
+WALL_CHARS = {
+    0     | 0     | 0     | 0     : ' ',
+    0     | 0     | 0     | WEST  : '╴',
+    0     | 0     | SOUTH | 0     : '╷',
+    0     | 0     | SOUTH | WEST  : '┐',
+    0     | EAST  | 0     | 0     : '╶',
+    0     | EAST  | 0     | WEST  : '─',
+    0     | EAST  | SOUTH | 0     : '┌',
+    0     | EAST  | SOUTH | WEST  : '┬',
+    NORTH | 0     | 0     | 0     : '╵',
+    NORTH | 0     | 0     | WEST  : '┘',
+    NORTH | 0     | SOUTH | 0     : '│',
+    NORTH | 0     | SOUTH | WEST  : '┤',
+    NORTH | EAST  | 0     | 0     : '└',
+    NORTH | EAST  | 0     | WEST  : '┴',
+    NORTH | EAST  | SOUTH | 0     : '├',
+    NORTH | EAST  | SOUTH | WEST  : '┼',
+}
+
 class Grid:
     def __init__(self, rows, cols):
         self.rows = rows
@@ -19,7 +42,7 @@ class Grid:
         PIPE = '│'
         DASH = '───'
 
-        ret = '┌'
+        ret = WALL_CHARS[ SOUTH | EAST ] #  gotta start somewhere.
 
         # do top border
         for cell in self.grid[0]:

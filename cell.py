@@ -1,4 +1,5 @@
 from distances import Distances
+import grid
 
 class Cell:
     def __init__(self, grid, row, col):
@@ -81,81 +82,43 @@ class Cell:
 
     # helpers for pretty-printing
     def ne_char(self):
-        if self.row == 0 and self.col == self.grid.cols - 1:
-            return '┐'
+        cell_ne = self.north.east if self.north else None
 
-        if self.row == 0 and self.has_boundary_with(self.east):
-            return '┬'
+        n = self.north and self.north.has_boundary_with(cell_ne)
+        e = self.east  and self.east.has_boundary_with(cell_ne)
+        s = self.has_boundary_with(self.east)
+        w = self.has_boundary_with(self.north)
 
-        if self.has_boundary_with(self.north) and self.has_boundary_with(self.east):
-            return '┼'
+        return self.intersection_char(n, e, s, w)
 
-        if self.has_boundary_with(self.east):
-            return '┐'
-
-        return '─'
 
     def se_char(self):
-        NORTH = 1
-        EAST  = 2
-        SOUTH = 4
-        WEST  = 8
-        last_col = self.grid.cols - 1
-
-        # Bottom row.
-        if self.row == self.grid.rows - 1:
-            if self.col == last_col:
-                return '┘'
-            elif self.has_boundary_with(self.east):
-                return '┴'
-            else:
-                return '─'
-
-        # Right column.
-        if self.col == last_col:
-            if self.has_boundary_with(self.south):
-                return '┤'
-            else:
-                return '│'
-
         # To actually know the character at the southeast of a cell, we need
         # to know both the south and east cells, but _also_ the southeast
         # cell. We'll build this character up tick by tick, I guess.
-        cell_se = self.east.south
-        n = NORTH if self.has_boundary_with(self.east)     else 0
-        w = WEST  if self.has_boundary_with(self.south)    else 0
-        e = EAST  if self.east.has_boundary_with(cell_se)  else 0
-        s = SOUTH if self.south.has_boundary_with(cell_se) else 0
+        cell_se = self.east.south if self.east else None
 
-        wall_chars = {
-            0     | 0     | 0     | 0     : ' ',
-            0     | 0     | 0     | WEST  : '╴',
-            0     | 0     | SOUTH | 0     : '╷',
-            0     | 0     | SOUTH | WEST  : '┐',
-            0     | EAST  | 0     | 0     : '╶',
-            0     | EAST  | 0     | WEST  : '─',
-            0     | EAST  | SOUTH | 0     : '┌',
-            0     | EAST  | SOUTH | WEST  : '┬',
-            NORTH | 0     | 0     | 0     : '╵',
-            NORTH | 0     | 0     | WEST  : '┘',
-            NORTH | 0     | SOUTH | 0     : '│',
-            NORTH | 0     | SOUTH | WEST  : '┤',
-            NORTH | EAST  | 0     | 0     : '└',
-            NORTH | EAST  | 0     | WEST  : '┴',
-            NORTH | EAST  | SOUTH | 0     : '├',
-            NORTH | EAST  | SOUTH | WEST  : '┼',
-        }
+        n = self.has_boundary_with(self.east)
+        e = self.east  and self.east.has_boundary_with(cell_se)
+        s = self.south and self.south.has_boundary_with(cell_se)
+        w = self.has_boundary_with(self.south)
 
-        return wall_chars[ n | e | s | w ]
+        return self.intersection_char(n, e, s, w)
 
     def sw_char(self):
-        if self.col != 0:
-            raise NotImplementedError('no use on non-initial columns')
+        cell_sw = self.south.west if self.south else None
 
-        if self.row == self.grid.rows - 1:
-            return '└'
+        n = self.has_boundary_with(self.west)
+        e = self.has_boundary_with(self.south)
+        s = self.south and self.south.has_boundary_with(cell_sw)
+        w = self.west  and self.west.has_boundary_with(cell_sw)
 
-        if self.has_boundary_with(self.south):
-            return '├'
+        return self.intersection_char(n, e, s, w)
 
-        return '│'
+    def intersection_char(self, n, e, s, w):
+        n = grid.NORTH if n else 0
+        e = grid.EAST  if e else 0
+        s = grid.SOUTH if s else 0
+        w = grid.WEST  if w else 0
+
+        return grid.WALL_CHARS[ n | e | s | w ]
