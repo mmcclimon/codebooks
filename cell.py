@@ -96,6 +96,10 @@ class Cell:
         return '─'
 
     def se_char(self):
+        NORTH = 1
+        EAST  = 2
+        SOUTH = 4
+        WEST  = 8
         last_col = self.grid.cols - 1
 
         # Bottom row.
@@ -118,35 +122,31 @@ class Cell:
         # to know both the south and east cells, but _also_ the southeast
         # cell. We'll build this character up tick by tick, I guess.
         cell_se = self.east.south
-        n = self.has_boundary_with(self.east)
-        w = self.has_boundary_with(self.south)
-        e = self.east.has_boundary_with(cell_se)
-        s = self.south.has_boundary_with(cell_se)
+        n = NORTH if self.has_boundary_with(self.east)     else 0
+        w = WEST  if self.has_boundary_with(self.south)    else 0
+        e = EAST  if self.east.has_boundary_with(cell_se)  else 0
+        s = SOUTH if self.south.has_boundary_with(cell_se) else 0
 
-        # one prong
-        if     n and not e and not s and not w: return '╵'
-        if not n and     e and not s and not w: return '╶'
-        if not n and not e and     s and not w: return '╷'
-        if not n and not e and not s and     w: return '╴'
+        wall_chars = {
+            0     | 0     | 0     | 0     : ' ',
+            0     | 0     | 0     | WEST  : '╴',
+            0     | 0     | SOUTH | 0     : '╷',
+            0     | 0     | SOUTH | WEST  : '┐',
+            0     | EAST  | 0     | 0     : '╶',
+            0     | EAST  | 0     | WEST  : '─',
+            0     | EAST  | SOUTH | 0     : '┌',
+            0     | EAST  | SOUTH | WEST  : '┬',
+            NORTH | 0     | 0     | 0     : '╵',
+            NORTH | 0     | 0     | WEST  : '┘',
+            NORTH | 0     | SOUTH | 0     : '│',
+            NORTH | 0     | SOUTH | WEST  : '┤',
+            NORTH | EAST  | 0     | 0     : '└',
+            NORTH | EAST  | 0     | WEST  : '┴',
+            NORTH | EAST  | SOUTH | 0     : '├',
+            NORTH | EAST  | SOUTH | WEST  : '┼',
+        }
 
-        # two prongs
-        if     n and     e and not s and not w: return '└'
-        if     n and not e and not s and     w: return '┘'
-        if not n and     e and     s and not w: return '┌'
-        if not n and not e and     s and     w: return '┐'
-        if     n and not e and     s and not w: return '│'
-        if not n and     e and not s and     e: return '─'
-
-        # three prongs
-        if n and e and w and not s: return '┴'
-        if n and e and s and not w: return '├'
-        if n and w and s and not e: return '┤'
-        if s and e and w and not n: return '┬'
-
-        # four prongs
-        if n and e and s and w: return '┼'
-
-        return 'x'
+        return wall_chars[ n | e | s | w ]
 
     def sw_char(self):
         if self.col != 0:
