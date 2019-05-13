@@ -1,3 +1,5 @@
+from distances import Distances
+
 class Cell:
     def __init__(self, grid, row, col):
         self.north = None
@@ -19,21 +21,39 @@ class Cell:
             "w" if self.west  else "-",
         )
 
-    def __key(self):
+    def _key(self):
         return (self.row, self.col)
 
     def __hash__(self):
-        return hash(self.__key())
+        return hash(self._key())
 
     def __eq__(self, other):
-        # This is daft, but I just want to do something so that I can use
-        # cells as hash keys
-        return self.__key() == other.__key()
+        if other is None:
+            return True
+
+        return self._key() == other._key()
 
     def __str__(self):
         if self.north and self.east and self.west and self.south:
             return "[]"
         return ""
+
+    def distances(self):
+        distances = Distances(self)
+        frontier = [self]
+
+        while len(frontier) > 0:
+            new_frontier = []
+
+            for cell in frontier:
+                for linked in cell.links:
+                    if linked not in distances.cells:
+                        distances[linked] = distances[cell] + 1
+                        new_frontier.append(linked)
+
+            frontier = new_frontier
+
+        return distances
 
     def link(self, other_cell, bidi=True):
         self.links.add(other_cell)

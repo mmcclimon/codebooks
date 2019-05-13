@@ -31,8 +31,9 @@ class Grid:
             bottom = row[0].sw_char()
 
             for cell in row:
+                body = ' {} '.format(self.contents_of(cell))
                 east_b = ' ' if cell.is_linked_to(cell.east) else PIPE
-                mid += '   ' + east_b
+                mid += body + east_b
 
                 south_b = '   ' if cell.is_linked_to(cell.south) else DASH
                 bottom += south_b + cell.se_char()
@@ -41,7 +42,6 @@ class Grid:
             ret += bottom + '\n'
 
         return ret
-
 
 
     def prepare_grid(self):
@@ -53,6 +53,9 @@ class Grid:
         if col < 0 or col > self.cols - 1:
             return None
         return self.grid[row][col]
+
+    def contents_of(self, cell):
+        return ' '
 
     def configure_cells(self):
         for cell in self.each_cell():
