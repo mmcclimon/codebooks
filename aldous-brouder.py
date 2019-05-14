@@ -28,7 +28,6 @@ if __name__ == '__main__':
     new_distances = new_start.distances()
     goal, _ = new_distances.max()
 
-    # grid.distances = new_distances.path_to(goal)
     new_start.content = 'S'
     goal.content = 'F'
     print(grid)
