@@ -15,3 +15,29 @@ class Distances:
 
     def __setitem__(self, k, val):
         self.cells[k] = val
+
+    def path_to(self, goal):
+        current = goal
+
+        breadcrumbs = Distances(self.root)
+        breadcrumbs[current] = self.cells[current]
+
+        while current != self.root:
+            for neighbor in current.links:
+                if self.cells[neighbor] < self.cells[current]:
+                    breadcrumbs[neighbor] = self.cells[neighbor]
+                    current = neighbor
+                    break
+
+        return breadcrumbs
+
+    def max(self):
+        max_dist = 0
+        max_cell = self.root
+
+        for cell, dist in self.cells.items():
+            if dist > max_dist:
+                max_cell = cell
+                max_dist = dist
+
+        return (max_cell, max_dist)
