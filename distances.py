@@ -41,3 +41,8 @@ class Distances:
                 max_dist = dist
 
         return (max_cell, max_dist)
+
+    # NB unordered!
+    def each_cell(self):
+        for cell in self.cells.keys():
+            yield cell

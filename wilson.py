@@ -26,16 +26,6 @@ class Wilson:
 
 
 if __name__ == '__main__':
-    grid = Grid(10,10)
+    grid = Grid(20,20)
     Wilson.on(grid)
-
-    start = grid.get(0,0)
-    distances = start.distances()
-    new_start, dist = distances.max()
-
-    new_distances = new_start.distances()
-    goal, _ = new_distances.max()
-
-    new_start.content = 'S'
-    goal.content = 'F'
-    print(grid)
+    print(grid.longest_path())

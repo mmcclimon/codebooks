@@ -118,8 +118,48 @@ class Grid:
     def int_to_char(self, num):
         try:
             return ALPHABET[num]
-        except KeyError:
+        except IndexError:
             return '.'
+
+    # these methods for printing all mutate state, which I'm not crazy about,
+    # but they're also convenient for now.
+    def longest_path(self):
+        # this prints S and F with dots for the path
+        start = self.get(0,0)
+        distances = start.distances()
+        new_start, dist = distances.max()
+
+        new_distances = new_start.distances()
+        goal, _ = new_distances.max()
+        self.distances = new_distances.path_to(goal)
+
+        for cell in self.distances.each_cell():
+            cell.content = '•'
+
+        new_start.content = 'S'
+        goal.content = 'F'
+        return str(self)
+
+    def start_finish(self):
+        start = self.get(0,0)
+        distances = start.distances()
+        new_start, dist = distances.max()
+
+        new_distances = new_start.distances()
+        goal, _ = new_distances.max()
+        self.distances = None
+
+        new_start.content = 'S'
+        goal.content = 'F'
+        return str(self)
+
+    def blank(self):
+        self.distances = None
+        for cell in self.each_cell():
+            cell.content = None
+
+        return str(self)
+
 
 if __name__ == '__main__':
     maze = Grid(5,5)
