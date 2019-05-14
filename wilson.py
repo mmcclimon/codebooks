@@ -14,11 +14,12 @@ class Wilson:
 
             while cell in unvisited:
                 cell = random.sample(list(cell.neighbors()), 1)[0]
-                try:
+                if cell not in path:
+                    path.append(cell)
+                else:
+                    # Loop removal
                     pos = path.index(cell)
                     path = path[0:pos+1]
-                except ValueError:
-                    path.append(cell)
 
             for idx in range(len(path)-1):
                 path[idx].link(path[idx+1])
