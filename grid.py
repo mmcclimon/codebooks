@@ -1,6 +1,8 @@
 import random
+import base36
 import cell
 
+ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 NORTH = 1
 EAST  = 2
 SOUTH = 4
@@ -28,7 +30,9 @@ class Grid:
     def __init__(self, rows, cols):
         self.rows = rows
         self.cols = cols
+        self.size = rows * cols
         self.grid = self.prepare_grid()
+        self.distances = None
         self.configure_cells()
 
     def __repr__(self):
@@ -78,6 +82,14 @@ class Grid:
         return self.grid[row][col]
 
     def contents_of(self, cell):
+        if cell.content:
+            return cell.content
+
+        if self.distances is None:
+            return ' '
+
+        if cell in self.distances and self.distances[cell] is not None:
+            return self.int_to_char(self.distances[cell])
         return ' '
 
     def configure_cells(self):
@@ -90,8 +102,8 @@ class Grid:
             cell.east  = self.get(row, col + 1)
 
     def random_cell(self):
-        r = random.randint(self.rows - 1)
-        c = random.randint(self.cols - 1)
+        r = random.randint(0, self.rows - 1)
+        c = random.randint(0, self.cols - 1)
         return self.get(r, c)
 
     def each_row(self):
@@ -103,6 +115,11 @@ class Grid:
             for cell in row:
                 yield cell
 
+    def int_to_char(self, num):
+        try:
+            return ALPHABET[num]
+        except KeyError:
+            return '.'
 
 if __name__ == '__main__':
     maze = Grid(5,5)

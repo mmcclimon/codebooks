@@ -11,6 +11,7 @@ class Cell:
         self.col = col
         self.links = set()
         self.grid = grid    # XXX this is a cycle, but I don't care
+        self.content = None
 
     def __repr__(self):
         return "<Cell[{},{}], <{}{}{}{}>>".format(
