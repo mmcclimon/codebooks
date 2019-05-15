@@ -5,7 +5,7 @@ class Wilson:
     def on(grid):
         unvisited = set(grid.each_cell())
 
-        first = random.sample(unvisited, 1)[0]
+        first = grid.random_cell()
         unvisited.remove(first)
 
         while len(unvisited) > 0:
@@ -13,7 +13,7 @@ class Wilson:
             path = [ cell ]
 
             while cell in unvisited:
-                cell = random.sample(list(cell.neighbors()), 1)[0]
+                cell = cell.random_neighbor()
                 if cell not in path:
                     path.append(cell)
                 else:

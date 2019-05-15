@@ -4,10 +4,10 @@ import random
 class Sidewinder:
     def on(grid):
         for row in grid.each_row():
-            run = set()
+            run = []
 
             for cell in row:
-                run.add(cell)
+                run.append(cell)
 
                 at_east = cell.east is None
                 at_north = cell.north is None
@@ -16,7 +16,7 @@ class Sidewinder:
                         not at_north and random.choice([True, False]))
 
                 if should_close:
-                    mem = random.sample(run, 1)[0]
+                    mem = random.choice(run)
                     if(mem.north):
                         mem.link(mem.north)
                     run.clear()

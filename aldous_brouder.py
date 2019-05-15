@@ -9,7 +9,7 @@ class AldousBroder:
         seen.add(cell)
 
         while len(seen) < grid.size:
-            next_cell = random.sample(list(cell.neighbors()), 1)[0]
+            next_cell = cell.random_neighbor()
             if next_cell not in seen:
                 cell.link(next_cell)
             seen.add(next_cell)
@@ -20,15 +20,4 @@ class AldousBroder:
 if __name__ == '__main__':
     grid = Grid(10,10)
     AldousBroder.on(grid)
-
-    start = grid.get(0,0)
-    distances = start.distances()
-    new_start, dist = distances.max()
-
-    new_distances = new_start.distances()
-    goal, _ = new_distances.max()
-
-    grid.distances = new_distances
-    new_start.content = 'S'
-    goal.content = 'F'
-    print(grid)
+    print(grid.longest_path())

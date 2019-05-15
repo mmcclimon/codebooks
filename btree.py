@@ -4,15 +4,10 @@ import random
 class BinaryTree:
     def on(grid):
         for cell in grid.each_cell():
-            neighbors = set()
-            if cell.north:
-                neighbors.add(cell.north)
-            if cell.east:
-                neighbors.add(cell.east)
+            opts = list(filter(lambda c: c is not None, [ cell.north, cell.east]))
 
-            if len(neighbors) > 0:
-                n = random.sample(neighbors, 1)[0]
-                cell.link(n)
+            if len(opts):
+                cell.link(random.choice(opts))
 
 if __name__ == '__main__':
     grid = Grid(10,10)
