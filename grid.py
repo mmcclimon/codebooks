@@ -115,6 +115,9 @@ class Grid:
             for cell in row:
                 yield cell
 
+    def dead_ends(self):
+        return set(filter(lambda c: len(c.links) == 1, self.each_cell()))
+
     def int_to_char(self, num):
         try:
             return ALPHABET[num]
