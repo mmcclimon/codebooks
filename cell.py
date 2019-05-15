@@ -1,5 +1,6 @@
 from distances import Distances
 import grid
+import random
 
 class Cell:
     def __init__(self, grid, row, col):
@@ -80,6 +81,22 @@ class Cell:
 
     def neighbors(self):
         return filter(lambda cell: cell is not None, [self.north, self.east, self.south, self.west])
+
+    def _pick_one(self, func):
+        xs = list(filter(func, self.neighbors()))
+        if len(xs) == 0:
+            return None
+        return random.sample(xs, 1)[0]
+
+    def random_neighbor(self):
+        return self._pick_one(lambda c: True)
+
+    def random_unvisited_neighbor(self):
+        return self._pick_one(lambda c: len(c.links) == 0)
+
+    def random_visited_neighbor(self):
+        return self._pick_one(lambda c: len(c.links) > 0)
+
 
     # helpers for pretty-printing
     def ne_char(self):
