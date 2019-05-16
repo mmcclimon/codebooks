@@ -164,23 +164,39 @@ class Grid:
 
         return str(self)
 
-    def to_png(self, cell_size=15, name='maze.png'):
-        width = cell_size * self.cols
-        height = cell_size * self.rows
-
+    def to_png(self, name='maze.png', mode='blank'):
         OFFSET = 5  # so the walls aren't at the edge of the image
         BG_COLOR = '#ffffff'
         WALL_COLOR = '#000000'
         WALL_PIXELS = 1
+        CELL_SIZE = 15
 
-        img = Image.new('P', (width+OFFSET*2,height+OFFSET*2), BG_COLOR)
+        width = CELL_SIZE * self.cols
+        height = CELL_SIZE * self.rows
+
+        img = Image.new('RGB', (width+OFFSET*2,height+OFFSET*2), BG_COLOR)
         draw = ImageDraw.Draw(img)
 
+        def coords_for_cell(cell):
+            w = OFFSET + cell.col * CELL_SIZE
+            n = OFFSET + cell.row * CELL_SIZE
+            e = OFFSET + (cell.col + 1) * CELL_SIZE
+            s = OFFSET + (cell.row + 1) * CELL_SIZE
+            return (w, n, e, s)
+
+        if mode == 'color':
+            start = self.get(self.rows//2, self.cols//2)
+            self.distances = start.distances()
+
+            # draw backgrounds first, because the lines need to overdraw
+            for cell in self.each_cell():
+                color = self.bg_color_for(cell)
+                if color:
+                    w,n,e,s = coords_for_cell(cell)
+                    draw.rectangle([w, n, e, s], fill=color)
+
         for cell in self.each_cell():
-            w = OFFSET + cell.col * cell_size
-            n = OFFSET + cell.row * cell_size
-            e = OFFSET + (cell.col + 1) * cell_size
-            s = OFFSET + (cell.row + 1) * cell_size
+            w,n,e,s = coords_for_cell(cell)
 
             # Every cell draws its own eastern/southern borders
             if cell.has_boundary_with(cell.east):
@@ -196,8 +212,21 @@ class Grid:
             if not cell.west:
                 draw.line([w, n, w, s], WALL_COLOR, WALL_PIXELS)
 
-
         img.save(name, 'PNG')
+
+    def bg_color_for(self, cell):
+        if self.distances is None:
+            return None
+
+        if cell in self.distances and self.distances[cell] is not None:
+            dist = self.distances[cell]
+            farthest, maximum = self.distances.max()
+            intensity = (maximum - dist) / maximum
+            dark = int(255 * intensity)
+            bright = int(128 + (127 * intensity))
+            return "rgb({0},{1},{0})".format(dark, bright)
+
+        # pass
 
 
 if __name__ == '__main__':

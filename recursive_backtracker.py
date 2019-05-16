@@ -20,7 +20,6 @@ class RecursiveBacktracker:
 
 
 if __name__ == '__main__':
-    grid = Grid(20,20)
+    grid = Grid(50,50)
     RecursiveBacktracker.on(grid)
-    print(grid.longest_path())
-    print("dead ends = {}".format(len(grid.dead_ends())))
+    grid.to_png(name='rb.png', mode='color')
