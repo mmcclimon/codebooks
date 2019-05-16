@@ -1,6 +1,7 @@
 import random
 import base36
 import cell
+from PIL import Image, ImageDraw
 
 ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 NORTH = 1
@@ -162,6 +163,41 @@ class Grid:
             cell.content = None
 
         return str(self)
+
+    def to_png(self, cell_size=15, name='maze.png'):
+        width = cell_size * self.cols
+        height = cell_size * self.rows
+
+        OFFSET = 5  # so the walls aren't at the edge of the image
+        BG_COLOR = '#ffffff'
+        WALL_COLOR = '#000000'
+        WALL_PIXELS = 1
+
+        img = Image.new('P', (width+OFFSET*2,height+OFFSET*2), BG_COLOR)
+        draw = ImageDraw.Draw(img)
+
+        for cell in self.each_cell():
+            w = OFFSET + cell.col * cell_size
+            n = OFFSET + cell.row * cell_size
+            e = OFFSET + (cell.col + 1) * cell_size
+            s = OFFSET + (cell.row + 1) * cell_size
+
+            # Every cell draws its own eastern/southern borders
+            if cell.has_boundary_with(cell.east):
+                draw.line([e, n, e, s], WALL_COLOR, WALL_PIXELS)
+
+            if cell.has_boundary_with(cell.south):
+                draw.line([w, s, e, s], WALL_COLOR, WALL_PIXELS)
+
+            # But if there are no cells to the north or west, it should draw
+            # that border too.
+            if not cell.north:
+                draw.line([w, n, e, n], WALL_COLOR, WALL_PIXELS)
+            if not cell.west:
+                draw.line([w, n, w, s], WALL_COLOR, WALL_PIXELS)
+
+
+        img.save(name, 'PNG')
 
 
 if __name__ == '__main__':
