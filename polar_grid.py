@@ -1,4 +1,5 @@
 from grid import Grid
+from recursive_backtracker import RecursiveBacktracker
 import math
 from PIL import Image, ImageDraw
 
@@ -25,24 +26,30 @@ class PolarGrid(Grid):
             theta_ccw = cell.col * theta
             theta_cw  = (cell.col + 1) * theta
 
-            ax = center + int(inner_rad * math.cos(theta_ccw))
-            ay = center + int(inner_rad * math.sin(theta_ccw))
-            bx = center + int(outer_rad * math.cos(theta_ccw))
-            by = center + int(outer_rad * math.sin(theta_ccw))
+            # outer walls
+            x1, x2 = center - outer_rad, center + outer_rad
+            bounding_box = x1, x1, x2, x2
 
-            cx = center + int(inner_rad * math.cos(theta_cw))
-            cy = center + int(inner_rad * math.sin(theta_cw))
-            dx = center + int(outer_rad * math.cos(theta_cw))
-            dy = center + int(outer_rad * math.sin(theta_cw))
+            ax = center + int(inner_rad * math.cos(theta_cw))
+            ay = center + int(inner_rad * math.sin(theta_cw))
+            bx = center + int(outer_rad * math.cos(theta_cw))
+            by = center + int(outer_rad * math.sin(theta_cw))
 
             if cell.has_boundary_with(cell.north):
-                draw.line([ax, ay, cx, cy], WALL_COLOR, WALL_PIXELS)
+                deg_ccw = math.degrees(theta_cw)
+                deg_cw = math.degrees(theta_ccw)
+                color = '#0000ff' if cell.row == 0 else WALL_COLOR
+                draw.arc([x1, x1, x2, x2], deg_cw, deg_ccw, color)
 
             if cell.has_boundary_with(cell.east):
-                draw.line([cx, cy, dx, dy], WALL_COLOR, WALL_PIXELS)
+                draw.line([ax, ay, bx, by], WALL_COLOR, WALL_PIXELS)
+
+            # break
 
         img.save(name, 'PNG')
 
 if  __name__ == '__main__':
-    maze = PolarGrid(10, 10)
-    maze.to_png(name='polar.png')
+    maze = PolarGrid(30, 30)
+    RecursiveBacktracker.on(maze)
+
+    maze.to_png(name='polar-arc.png')
