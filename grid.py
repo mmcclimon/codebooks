@@ -78,7 +78,7 @@ class Grid:
     def get(self, row, col):
         if row < 0 or row > self.rows - 1:
             return None
-        if col < 0 or col > self.cols - 1:
+        if col < 0 or col > len(self.grid[row]) - 1:
             return None
         return self.grid[row][col]
 
