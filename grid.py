@@ -73,7 +73,7 @@ class Grid:
 
 
     def prepare_grid(self):
-        return [[cell.Cell(self, r, c) for c in range(self.cols)] for r in range(self.rows)]
+        return [[cell.Cell(r, c) for c in range(self.cols)] for r in range(self.rows)]
 
     def get(self, row, col):
         if row < 0 or row > self.rows - 1:

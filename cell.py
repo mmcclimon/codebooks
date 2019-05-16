@@ -3,7 +3,7 @@ import grid
 import random
 
 class Cell:
-    def __init__(self, grid, row, col):
+    def __init__(self, row, col):
         self.north = None
         self.east = None
         self.south = None
