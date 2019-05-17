@@ -220,7 +220,7 @@ class Grid:
 
         if cell in self.distances and self.distances[cell] is not None:
             dist = self.distances[cell]
-            farthest, maximum = self.distances.max()
+            _, maximum = self.distances.max()
             intensity = (maximum - dist) / maximum
             dark = int(255 * intensity)
             bright = int(128 + (127 * intensity))

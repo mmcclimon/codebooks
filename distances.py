@@ -3,6 +3,8 @@ class Distances:
         self.root = root
         self.cells = {}
         self.cells[root] = 0
+        self._max_dist = None
+        self._max_cell = None
 
     def __repr__(self):
         return repr(self.cells)
@@ -32,6 +34,9 @@ class Distances:
         return breadcrumbs
 
     def max(self):
+        if self._max_dist is not None:
+            return (self._max_cell, self._max_dist)
+
         max_dist = 0
         max_cell = self.root
 
@@ -40,6 +45,8 @@ class Distances:
                 max_cell = cell
                 max_dist = dist
 
+        self._max_cell = max_cell
+        self._max_dist = max_dist
         return (max_cell, max_dist)
 
     # NB unordered!
