@@ -53,7 +53,6 @@ class PolarGrid(Grid):
 
     def to_png(self, name='maze.png'):
         OFFSET = 5
-        CELL_SIZE = 10
         BG_COLOR = '#ffffff'
         WALL_COLOR = '#000000'
         WALL_PIXELS = 1
