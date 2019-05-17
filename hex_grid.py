@@ -23,7 +23,7 @@ class HexGrid(Grid):
             cell.south     = self.get(row + 1, col)
             cell.southeast = self.get(south_diag, col + 1)
 
-    def to_png(self, name='maze.png'):
+    def to_png(self, name='maze.png', mode='blank'):
         # OFFSET = 5
         BG_COLOR = '#ffffff'
         WALL_COLOR = '#000000'
@@ -43,7 +43,7 @@ class HexGrid(Grid):
         img = Image.new('RGB', (img_width+1,img_height+1), BG_COLOR)
         draw = ImageDraw.Draw(img)
 
-        for cell in self.each_cell():
+        def coords_for_cell(cell):
             cx = CELL_SIZE + 3 * cell.col * a_size
             cy = b_size + cell.row * height
             if cell.col % 2 == 1:
@@ -59,6 +59,24 @@ class HexGrid(Grid):
             yn = int(cy - b_size)
             yc = int(cy)
             ys = int(cy + b_size)
+
+            return (xfw, xnw, xne, xfe, yn, yc, ys)     # gross
+
+        if mode == 'color':
+            start = self.get(self.rows//2, self.cols//2)
+            self.distances = start.distances()
+
+            # draw backgrounds first, because the lines need to overdraw
+            for cell in self.each_cell():
+                color = self.bg_color_for(cell)
+                if color:
+                    xfw, xnw, xne, xfe, yn, yc, ys = coords_for_cell(cell)
+                    points = [(xfw, yc), (xnw, yn), (xne, yn),
+                              (xfe, yc), (xne, ys), (xnw, ys)]
+                    draw.polygon(points, fill=color)
+
+        for cell in self.each_cell():
+            xfw, xnw, xne, xfe, yn, yc, ys = coords_for_cell(cell)
 
             if not cell.southwest:
                 draw.line([xfw, yc, xnw, ys], WALL_COLOR, WALL_PIXELS)
@@ -77,6 +95,6 @@ class HexGrid(Grid):
         img.save(name, 'PNG')
 
 if  __name__ == '__main__':
-    maze = HexGrid(15, 15)
+    maze = HexGrid(35, 35)
     RecursiveBacktracker.on(maze)
-    maze.to_png(name='hex.png')
+    maze.to_png(name='hex.png', mode='color')
