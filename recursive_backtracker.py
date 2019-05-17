@@ -1,4 +1,4 @@
-from grid import Grid
+from square_grid import SquareGrid
 import random
 
 class RecursiveBacktracker:
@@ -20,6 +20,7 @@ class RecursiveBacktracker:
 
 
 if __name__ == '__main__':
-    grid = Grid(50,50)
+    grid = SquareGrid(20,20)
     RecursiveBacktracker.on(grid)
-    grid.to_png(name='rb.png', mode='color')
+    print(grid.blank())
+    # grid.to_png(name='rb.png', mode='color')

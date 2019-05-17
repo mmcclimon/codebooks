@@ -1,4 +1,4 @@
-from grid import Grid
+from square_grid import SquareGrid
 import random
 
 class Wilson:
@@ -27,6 +27,6 @@ class Wilson:
 
 
 if __name__ == '__main__':
-    grid = Grid(20,20)
+    grid = SquareGrid(20,20)
     Wilson.on(grid)
     print(grid.longest_path())

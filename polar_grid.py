@@ -47,10 +47,6 @@ class PolarGrid(Grid):
         actual_col = col % len(self.grid[row])
         return self.grid[row][actual_col]
 
-    def random_cell(self):
-        row = random.choice(self.grid)
-        return random.choice(row)
-
     def to_png(self, name='maze.png'):
         OFFSET = 5
         BG_COLOR = '#ffffff'

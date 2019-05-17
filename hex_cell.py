@@ -5,6 +5,8 @@ from cell import Cell
 class HexCell(Cell):
     def __init__(self, row, col):
         super().__init__(row, col)
+        self.north = None
+        self.south = None
         self.northeast = None
         self.northwest = None
         self.southeast = None

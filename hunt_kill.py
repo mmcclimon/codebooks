@@ -1,8 +1,8 @@
-from grid import Grid
+from square_grid import SquareGrid
 import random
 
 class HuntAndKill:
-    def on( grid):
+    def on(grid):
         current = grid.random_cell()
         seen = set()
 
@@ -26,6 +26,6 @@ class HuntAndKill:
 
 
 if __name__ == '__main__':
-    grid = Grid(20,20)
+    grid = SquareGrid(20,20)
     HuntAndKill.on(grid)
     print(grid.longest_path())
