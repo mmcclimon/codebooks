@@ -29,7 +29,8 @@ WALL_CHARS = {
 
 class SquareGrid(Grid):
     def prepare_grid(self):
-        return [[SquareCell(r, c) for c in range(self.cols)] for r in range(self.rows)]
+        return [[SquareCell(self, r, c) for c in range(self.cols)]
+                for r in range(self.rows)]
 
     def configure_cells(self):
         for cell in self.each_cell():

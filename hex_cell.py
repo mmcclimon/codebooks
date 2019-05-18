@@ -3,8 +3,8 @@ from cell import Cell
 # really, Cell should be more abstract and there should be a SquareCell that
 # does most of the normal things. Alas.
 class HexCell(Cell):
-    def __init__(self, row, col):
-        super().__init__(row, col)
+    def __init__(self, grid, row, col):
+        super().__init__(grid, row, col)
         self.north = None
         self.south = None
         self.northeast = None

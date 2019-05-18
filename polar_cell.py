@@ -1,8 +1,8 @@
 from cell import Cell
 
 class PolarCell(Cell):
-    def __init__(self, row, col):
-        super().__init__(row, col)
+    def __init__(self, grid, row, col):
+        super().__init__(grid, row, col)
         self.cw      = None
         self.ccw     = None
         self.inward  = None

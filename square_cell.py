@@ -2,8 +2,8 @@ from cell import Cell
 import square_grid as grid
 
 class SquareCell(Cell):
-    def __init__(self, row, col):
-        super().__init__(row, col)
+    def __init__(self, grid, row, col):
+        super().__init__(grid, row, col)
         self.north = None
         self.east = None
         self.south = None

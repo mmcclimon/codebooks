@@ -7,7 +7,8 @@ from PIL import Image, ImageDraw
 
 class HexGrid(Grid):
     def prepare_grid(self):
-        return [[HexCell(r, c) for c in range(self.cols)] for r in range(self.rows)]
+        return [[HexCell(self, r, c) for c in range(self.cols)]
+                for r in range(self.rows)]
 
     def configure_cells(self):
         for cell in self.each_cell():

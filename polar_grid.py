@@ -24,7 +24,7 @@ class PolarGrid(Grid):
             est_width = circumference / prev_count
             ratio = round(est_width / row_height)
             num_cells = prev_count * ratio
-            rows.append([ PolarCell(idx, col) for col in range(num_cells) ])
+            rows.append([PolarCell(self, idx, col) for col in range(num_cells)])
 
         return rows
 
