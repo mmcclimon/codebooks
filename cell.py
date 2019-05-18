@@ -5,7 +5,7 @@ import weakref
 
 class Cell:
     def __init__(self, grid, row, col):
-        self.grid = weakref.ref(grid)
+        self.grid = weakref.proxy(grid)
         self.row = row
         self.col = col
         self.links = set()

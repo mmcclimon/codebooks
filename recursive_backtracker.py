@@ -20,7 +20,7 @@ class RecursiveBacktracker:
 
 
 if __name__ == '__main__':
-    grid = SquareGrid(20,20)
+    grid = SquareGrid(50,50)
     RecursiveBacktracker.on(grid)
-    print(grid.blank())
-    # grid.to_png(name='rb.png', mode='color')
+    # print(grid.blank())
+    grid.to_png(name='rb.png', mode='color')

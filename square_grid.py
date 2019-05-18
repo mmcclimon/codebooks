@@ -1,6 +1,7 @@
 from grid import Grid
 from square_cell import SquareCell
 from PIL import Image, ImageDraw
+from collections import namedtuple
 
 ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 NORTH = 1
@@ -79,55 +80,29 @@ class SquareGrid(Grid):
         except IndexError:
             return '.'
 
+    def _generate_bg_colors(self):
+        start = self.get(self.rows//2, self.cols//2)
+        self.distances = start.distances()
+
     def to_png(self, name='maze.png', mode='blank'):
-        OFFSET = 5  # so the walls aren't at the edge of the image
-        BG_COLOR = '#ffffff'
-        WALL_COLOR = '#000000'
-        WALL_PIXELS = 1
-        CELL_SIZE = 15
+        fields = ['offset', 'cell_size', 'bg_color', 'wall_color', 'wall_px']
+        ImgData = namedtuple('ImgData', fields)
+        img = ImgData(5, 15, '#ffffff', '#000000', 1)
 
-        width = CELL_SIZE * self.cols
-        height = CELL_SIZE * self.rows
+        width = img.cell_size * self.cols + img.offset * 2
+        height = img.cell_size * self.rows + img.offset * 2
 
-        img = Image.new('RGB', (width+OFFSET*2,height+OFFSET*2), BG_COLOR)
-        draw = ImageDraw.Draw(img)
-
-        def coords_for_cell(cell):
-            w = OFFSET + cell.col * CELL_SIZE
-            n = OFFSET + cell.row * CELL_SIZE
-            e = OFFSET + (cell.col + 1) * CELL_SIZE
-            s = OFFSET + (cell.row + 1) * CELL_SIZE
-            return (w, n, e, s)
+        image_object = Image.new('RGB', (width, height), img.bg_color)
+        draw = ImageDraw.Draw(image_object)
 
         if mode == 'color':
-            start = self.get(self.rows//2, self.cols//2)
-            self.distances = start.distances()
+            self._generate_bg_colors()
 
-            # draw backgrounds first, because the lines need to overdraw
+        for func in [SquareCell.draw_bg, SquareCell.draw_walls]:
             for cell in self.each_cell():
-                color = self.bg_color_for(cell)
-                if color:
-                    w,n,e,s = coords_for_cell(cell)
-                    draw.rectangle([w, n, e, s], fill=color)
+                func(cell, draw, img)
 
-        for cell in self.each_cell():
-            w,n,e,s = coords_for_cell(cell)
-
-            # Every cell draws its own eastern/southern borders
-            if cell.has_boundary_with(cell.east):
-                draw.line([e, n, e, s], WALL_COLOR, WALL_PIXELS)
-
-            if cell.has_boundary_with(cell.south):
-                draw.line([w, s, e, s], WALL_COLOR, WALL_PIXELS)
-
-            # But if there are no cells to the north or west, it should draw
-            # that border too.
-            if not cell.north:
-                draw.line([w, n, e, n], WALL_COLOR, WALL_PIXELS)
-            if not cell.west:
-                draw.line([w, n, w, s], WALL_COLOR, WALL_PIXELS)
-
-        img.save(name, 'PNG')
+        image_object.save(name, 'PNG')
 
     # these methods for printing all mutate state, which I'm not crazy about,
     # but they're also convenient for now.

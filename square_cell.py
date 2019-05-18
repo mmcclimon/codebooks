@@ -54,3 +54,34 @@ class SquareCell(Cell):
         w = grid.WEST  if w else 0
 
         return grid.WALL_CHARS[ n | e | s | w ]
+
+    def _coordinates_for(self, img):
+        w = img.offset + self.col * img.cell_size
+        n = img.offset + self.row * img.cell_size
+        e = img.offset + (self.col + 1) * img.cell_size
+        s = img.offset + (self.row + 1) * img.cell_size
+        return (w, n, e, s)
+
+    def draw_bg(self, draw, img):
+        color = self.grid.bg_color_for(self)
+        if not color:
+            return
+
+        w,n,e,s = self._coordinates_for(img)
+        draw.rectangle([w, n, e, s], fill=color)
+
+    def draw_walls(self, draw, img):
+        w,n,e,s = self._coordinates_for(img)
+
+        # We will always draw our own eastern/southern borders
+        if self.has_boundary_with(self.east):
+            draw.line([e, n, e, s], img.wall_color, img.wall_px)
+
+        if self.has_boundary_with(self.south):
+            draw.line([w, s, e, s], img.wall_color, img.wall_px)
+
+        # But if we have no neighbor to the north or west, we'll draw that too.
+        if not self.north:
+            draw.line([w, n, e, n], img.wall_color, img.wall_px)
+        if not self.west:
+            draw.line([w, n, w, s], img.wall_color, img.wall_px)
