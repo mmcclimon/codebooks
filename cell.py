@@ -21,7 +21,7 @@ class Cell:
 
     def __eq__(self, other):
         if other is None:
-            return True
+            return False
 
         return self._key() == other._key()
 
