@@ -23,4 +23,4 @@ if __name__ == '__main__':
     grid = SquareGrid(50,50)
     RecursiveBacktracker.on(grid)
     # print(grid.blank())
-    grid.to_png(name='rb.png', mode='color')
+    grid.to_png(name='rb.png', mode='color', inset=0.1)

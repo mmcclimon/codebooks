@@ -80,10 +80,13 @@ class SquareGrid(Grid):
         except IndexError:
             return '.'
 
-    def to_png(self, name='maze.png', mode='blank'):
-        fields = ['offset', 'cell_size', 'bg_color', 'wall_color', 'wall_px']
+    def to_png(self, name='maze.png', mode='blank', inset=0):
+        fields = ['offset', 'cell_size', 'inset', 'bg_color', 'wall_color', 'wall_px']
         ImgData = namedtuple('ImgData', fields)
-        img = ImgData(5, 15, '#ffffff', '#000000', 1)
+
+        cell_size = 15
+        inset = cell_size * inset
+        img = ImgData(5, cell_size, inset, '#ffffff', '#000000', 1)
 
         width = img.cell_size * self.cols + img.offset * 2
         height = img.cell_size * self.rows + img.offset * 2
