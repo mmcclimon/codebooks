@@ -1,4 +1,5 @@
 from square_grid import SquareGrid
+from weave_grid import WeaveGrid
 import random
 
 class RecursiveBacktracker:
@@ -20,7 +21,6 @@ class RecursiveBacktracker:
 
 
 if __name__ == '__main__':
-    grid = SquareGrid(50,50)
+    grid = WeaveGrid(35,35)
     RecursiveBacktracker.on(grid)
-    # print(grid.blank())
-    grid.to_png(name='rb.png', mode='color', inset=0.1)
+    grid.to_png(name='woven.png', inset=0.1)

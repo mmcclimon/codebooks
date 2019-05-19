@@ -11,10 +11,10 @@ class Cell:
         self.content = None
 
     def __repr__(self):
-        return "<Cell[{},{}]>".format(self.row, self.col)
+        return "<{}[{},{}]>".format(self.__class__, self.row, self.col)
 
     def _key(self):
-        return (self.row, self.col)
+        return (self.__class__, self.row, self.col)
 
     def __hash__(self):
         return hash(self._key())
