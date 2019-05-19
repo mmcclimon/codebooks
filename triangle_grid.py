@@ -1,6 +1,7 @@
 from grid import Grid
 from triangle_cell import TriangleCell
 from recursive_backtracker import RecursiveBacktracker
+from collections import namedtuple
 import math
 import random
 from PIL import Image, ImageDraw
@@ -24,68 +25,26 @@ class TriangleGrid(Grid):
 
 
     def to_png(self, name='maze.png', mode='blank'):
-        OFFSET = 5
-        BG_COLOR = '#ffffff'
-        WALL_COLOR = '#000000'
-        WALL_PIXELS = 1
-        CELL_SIZE = 25
+        fields = ['offset', 'cell_size', 'bg_color', 'wall_color', 'wall_px']
+        ImgData = namedtuple('ImgData', fields)
+        img = ImgData(5, 25, '#ffffff', '#000000', 1)
 
-        width = CELL_SIZE
-        half_width = width / 2
-        height = CELL_SIZE * math.sqrt(3) / 2
-        half_height = height / 2
+        cell_height = img.cell_size * math.sqrt(3) / 2
 
-        img_width = int(CELL_SIZE * (self.cols + 1) / 2) + OFFSET*2
-        img_height = int(height * self.rows) + OFFSET*2
+        width = int(img.cell_size * (self.cols + 1) / 2) + img.offset * 2
+        height = int(cell_height * self.rows) + img.offset * 2
 
-        img = Image.new('RGB', (img_width+1,img_height+1), BG_COLOR)
-        draw = ImageDraw.Draw(img)
-
-        def coords_for_cell(cell):
-            cx = OFFSET + (half_width + cell.col * half_width)
-            cy = OFFSET + (half_height + cell.row * height)
-
-            west_x = int(cx - half_width)
-            mid_x = int(cx)
-            east_x = int(cx + half_width)
-
-            apex_y = int(cy - half_height)
-            base_y = int(cy + half_height)
-
-            if not cell.is_upright:
-                apex_y, base_y = base_y, apex_y
-
-            return (west_x, mid_x, east_x, apex_y, base_y) # gross
+        image_object = Image.new('RGB', (width, height), img.bg_color)
+        draw = ImageDraw.Draw(image_object)
 
         if mode == 'color':
-            start = self.get(self.rows//2, self.cols//2)
-            self.distances = start.distances()
+            self._generate_bg_colors()
 
-            # draw backgrounds first, because the lines need to overdraw
+        for method in [TriangleCell.draw_bg, TriangleCell.draw_walls]:
             for cell in self.each_cell():
-                color = self.bg_color_for(cell)
-                if color:
-                    west_x, mid_x, east_x, apex_y, base_y = coords_for_cell(cell)
-                    points = [(west_x, base_y), (mid_x, apex_y), (east_x, base_y)]
-                    draw.polygon(points, fill=color)
+                method(cell, draw, img)
 
-        for cell in self.each_cell():
-            west_x, mid_x, east_x, apex_y, base_y = coords_for_cell(cell)
-
-            if not cell.west:
-                draw.line([west_x, base_y, mid_x, apex_y], WALL_COLOR, WALL_PIXELS)
-
-            if cell.has_boundary_with(cell.east):
-                draw.line([east_x, base_y, mid_x, apex_y], WALL_COLOR, WALL_PIXELS)
-
-            no_south = cell.is_upright and not cell.south
-            unlinked = not cell.is_upright and cell.has_boundary_with(cell.north)
-
-            if no_south or unlinked:
-                draw.line([west_x, base_y, east_x, base_y], WALL_COLOR, WALL_PIXELS)
-
-
-        img.save(name, 'PNG')
+        image_object.save(name, 'PNG')
 
 if  __name__ == '__main__':
     maze = TriangleGrid(50, 75)

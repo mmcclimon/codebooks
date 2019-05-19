@@ -80,10 +80,6 @@ class SquareGrid(Grid):
         except IndexError:
             return '.'
 
-    def _generate_bg_colors(self):
-        start = self.get(self.rows//2, self.cols//2)
-        self.distances = start.distances()
-
     def to_png(self, name='maze.png', mode='blank'):
         fields = ['offset', 'cell_size', 'bg_color', 'wall_color', 'wall_px']
         ImgData = namedtuple('ImgData', fields)
@@ -98,9 +94,9 @@ class SquareGrid(Grid):
         if mode == 'color':
             self._generate_bg_colors()
 
-        for func in [SquareCell.draw_bg, SquareCell.draw_walls]:
+        for method in [SquareCell.draw_bg, SquareCell.draw_walls]:
             for cell in self.each_cell():
-                func(cell, draw, img)
+                method(cell, draw, img)
 
         image_object.save(name, 'PNG')
 

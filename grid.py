@@ -52,6 +52,10 @@ class Grid:
     def dead_ends(self):
         return set(filter(lambda c: len(c.links) == 1, self.each_cell()))
 
+    def _generate_bg_colors(self):
+        start = self.get(self.rows//2, self.cols//2)
+        self.distances = start.distances()
+
     def bg_color_for(self, cell):
         if self.distances is None:
             return None
