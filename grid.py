@@ -25,6 +25,11 @@ class Grid:
             return None
         return self.grid[row][col]
 
+    # from a cell's key()
+    def get_by_key(self, key):
+        _, row, col = key
+        return self.get(row, col)
+
     def contents_of(self, cell):
         if cell.content:
             return cell.content

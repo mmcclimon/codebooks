@@ -13,7 +13,7 @@ class Cell:
     def __repr__(self):
         return "<{}[{},{}]>".format(self.__class__, self.row, self.col)
 
-    def _key(self):
+    def key(self):
         return (self.__class__, self.row, self.col)
 
     def __hash__(self):
@@ -70,7 +70,7 @@ class Cell:
 
             for cell in frontier:
                 for linked in cell.links:
-                    if linked not in distances.cells:
+                    if linked not in distances:
                         distances[linked] = distances[cell] + 1
                         new_frontier.append(linked)
 
