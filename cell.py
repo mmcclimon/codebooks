@@ -16,15 +16,6 @@ class Cell:
     def key(self):
         return (self.__class__, self.row, self.col)
 
-    def __hash__(self):
-        return hash(self._key())
-
-    def __eq__(self, other):
-        if other is None:
-            return False
-
-        return self._key() == other._key()
-
     def link(self, other_cell, bidi=True):
         self.links.add(other_cell)
         if bidi:
