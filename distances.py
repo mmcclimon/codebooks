@@ -65,3 +65,7 @@ class Distances:
     def each_cell(self):
         for key in self._store.keys():
             yield self._grid.get_by_key(key)
+
+    def items(self):
+        for k, v in self._store.items():
+            yield (self._grid.get_by_key(k), v)

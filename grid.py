@@ -62,6 +62,9 @@ class Grid:
         self.distances = start.distances()
 
     def bg_color_for(self, cell):
+        if cell.bg_color:
+            return cell.bg_color
+
         if self.distances is None:
             return None
 

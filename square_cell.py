@@ -78,6 +78,15 @@ class SquareCell(Cell):
 
         return [x1, x2, x3, x4, y1, y2, y3, y4]
 
+    def center_for(self, img):
+        x = img.offset + self.col * img.cell_size
+        y = img.offset + self.row * img.cell_size
+
+        left, right = x, x + img.cell_size
+        top, bottom = y, y + img.cell_size
+
+        return ((left + right) // 2, (top + bottom) // 2)
+
     def draw_bg(self, draw, img):
         color = self.grid.bg_color_for(self)
         if not color:

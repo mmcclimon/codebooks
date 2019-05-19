@@ -2,6 +2,7 @@ from grid import Grid
 from square_cell import SquareCell
 from PIL import Image, ImageDraw
 from collections import namedtuple
+import operator
 
 ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 NORTH = 1
@@ -84,7 +85,7 @@ class SquareGrid(Grid):
         fields = ['offset', 'cell_size', 'inset', 'bg_color', 'wall_color', 'wall_px']
         ImgData = namedtuple('ImgData', fields)
 
-        cell_size = 15
+        cell_size = 16
         inset = cell_size * inset
         img = ImgData(5, cell_size, inset, '#ffffff', '#000000', 1)
 
@@ -94,12 +95,21 @@ class SquareGrid(Grid):
         image_object = Image.new('RGB', (width, height), img.bg_color)
         draw = ImageDraw.Draw(image_object)
 
-        if mode == 'color':
+        if mode == 'path':
+            self.longest_path()
+            path = map(lambda t: t[0],
+                    sorted(self.distances.items(), key=operator.itemgetter(1)))
+
+        elif mode == 'color':
             self._generate_bg_colors()
 
         for method in [SquareCell.draw_bg, SquareCell.draw_walls]:
             for cell in self.each_cell():
                 method(cell, draw, img)
+
+
+        coords = [cell.center_for(img) for cell in path]
+        draw.line(coords, '#77f0aa', 2)
 
         image_object.save(name, 'PNG')
 
@@ -117,9 +127,12 @@ class SquareGrid(Grid):
 
         for cell in self.distances.each_cell():
             cell.content = '•'
+            cell.bg_color = '#ffffff'
 
         new_start.content = 'S'
+        new_start.bg_color = '#99cc99'
         goal.content = 'F'
+        goal.bg_color = '#cc9999'
         return str(self)
 
     def start_finish(self):

@@ -9,6 +9,7 @@ class Cell:
         self.col = col
         self.links = set()
         self.content = None
+        self.bg_color = None
 
     def __repr__(self):
         return "<{}[{},{}]>".format(self.__class__, self.row, self.col)
