@@ -1,11 +1,10 @@
 from distances import Distances
 import grid
 import random
-import weakref
 
 class Cell:
     def __init__(self, grid, row, col):
-        self.grid = weakref.proxy(grid)
+        self.grid = grid
         self.row = row
         self.col = col
         self.links = set()
