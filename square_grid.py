@@ -107,9 +107,10 @@ class SquareGrid(Grid):
             for cell in self.each_cell():
                 method(cell, draw, img)
 
+        if mode == 'path':
+            coords = [cell.center_for(img) for cell in path]
+            draw.line(coords, '#77f0aa', 2)
 
-        coords = [cell.center_for(img) for cell in path]
-        draw.line(coords, '#77f0aa', 2)
 
         image_object.save(name, 'PNG')
 

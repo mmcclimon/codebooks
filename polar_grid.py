@@ -14,7 +14,7 @@ class PolarGrid(Grid):
         row_height = 1 / self.rows
 
         rows = []
-        rows.append([ PolarCell(0, 0) ])
+        rows.append([ PolarCell(self, 0, 0) ])
 
         for idx in range(1, self.rows):
             radius = idx / self.rows
